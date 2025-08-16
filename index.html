@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <style>
+    /* Umumiy stil */
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #f0f4f8;
+    }
+
+    header {
+      background: #333;
+      color: #fff;
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    #book-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 20px;
+      padding: 20px;
+    }
+
+    .book {
+      background: #fff;
+      padding: 15px;
+      border-radius: 8px;
+      text-align: center;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .book img {
+      width: 100px;
+      height: 140px;
+      object-fit: cover;
+    }
+
+    button {
+      padding: 8px 12px;
+      border: none;
+      background: #007bff;
+      color: white;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #0056b3;
+    }
+
+    /* Savat modal oynasi */
+    #cart-modal {
+      position: fixed;
+      top: 20%;
+      left: 35%;
+      width: 30%;
+      background: white;
+      padding: 20px;
+      border: 2px solid #333;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+      z-index: 999;
+    }
+
+    .hidden {
+      display: none;
+    }
+  </style>
+  <body>
+    <header>
+      <h1>📚 Book Shopping</h1>
+      <button id="cart-btn">🛒 Savat (<span id="cart-count">0</span>)</button>
+    </header>
+
+    <main id="book-list">
+      <!-- Kitoblar JavaScript orqali joylanadi -->
+    </main>
+
+    <!-- Savat oynasi -->
+    <div id="cart-modal" class="hidden">
+      <h2>Savat</h2>
+      <ul id="cart-items"></ul>
+      <p>Jami: <span id="total-price">0</span> so'm</p>
+      <button id="clear-cart">Tozalash</button>
+      <button id="close-cart">Yopish</button>
+    </div>
+    <script>
+      // Kitoblar ro'yxati
+      const books = [
+        {
+          id: 1,
+          title: "JavaScript Basics",
+          price: 40000,
+          img: "https://placehold.co/100x140",
+        },
+        {
+          id: 2,
+          title: "CSS Design",
+          price: 35000,
+          img: "https://placehold.co/100x140",
+        },
+        {
+          id: 3,
+          title: "HTML in Depth",
+          price: 30000,
+          img: "https://placehold.co/100x140",
+        },
+      ];
+
+      // DOM elementlar
+      const bookList = document.getElementById("book-list");
+      const cartModal = document.getElementById("cart-modal");
+      const cartBtn = document.getElementById("cart-btn");
+      const closeCart = document.getElementById("close-cart");
+      const clearCart = document.getElementById("clear-cart");
+      const cartItems = document.getElementById("cart-items");
+      const totalPrice = document.getElementById("total-price");
+      const cartCount = document.getElementById("cart-count");
+
+      // Savat (bo'sh ro'yxat)
+      let cart = [];
+
+      // Kitoblarni sahifaga chiqarish
+      books.forEach((book) => {
+        const div = document.createElement("div");
+        div.classList.add("book");
+        div.innerHTML = `
+    <img src="${book.img}" alt="${book.title}">
+    <h3>${book.title}</h3>
+    <p>${book.price} so'm</p>
+    <button onclick="addToCart(${book.id})">Qo'shish</button>
+  `;
+        bookList.appendChild(div);
+      });
+
+      // Savatga kitob qo'shish
+      function addToCart(id) {
+        const item = books.find((book) => book.id === id);
+        cart.push(item);
+        updateCart();
+      }
+
+      // Savatni yangilash
+      function updateCart() {
+        cartItems.innerHTML = "";
+        let total = 0;
+        cart.forEach((book) => {
+          const li = document.createElement("li");
+          li.textContent = `${book.title} - ${book.price} so'm`;
+          cartItems.appendChild(li);
+          total += book.price;
+        });
+        totalPrice.textContent = total;
+        cartCount.textContent = cart.length;
+      }
+
+      // Modalni ochish / yopish
+      cartBtn.onclick = () => cartModal.classList.remove("hidden");
+      closeCart.onclick = () => cartModal.classList.add("hidden");
+      clearCart.onclick = () => {
+        cart = [];
+        updateCart();
+      };
+    </script>
+  </body>
+</html>
